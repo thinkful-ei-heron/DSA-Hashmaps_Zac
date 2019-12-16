@@ -9,3 +9,11 @@
 - The output will be 20; 10; because in each map the same key is being hashed twice, so in each case there is one key in the map with whichever value was set last.
 
 ## 3) Demonstrate understanding of Hash maps
+```
+| 22 | 88 |  |  | 4 | 15 | 28 | 17 | 59 | 31 | 10 |
+
+|  |    |    | 12 |  |  |    |  | 17 |
+|  | 28 | 5  |    |  |  | 15 |  |    |
+|  | 19 | 20 |    |  |  | 33 |  |    |
+|  | 10 |    |    |  |  |    |  |    |
+```
