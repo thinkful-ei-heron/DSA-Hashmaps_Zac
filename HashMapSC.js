@@ -1,62 +1,109 @@
 'use strict';
 
-const LinkedList = require('./LinkedList');
+class _Node {
+	constructor(key = null, value = null, next = null) {
+		this.key = key;
+		this.value = value;
+		this.next = next;
+	}
+
+}
 
 class HashMapSC {
 	constructor(initialCapacity = 8) {
 		this.length = 0;
 		this._hashTable = [];
 		this._capacity = initialCapacity;
-		this._deleted = 0;
 	}
 
 	get(key) {
-		const index = this._findSlot(key);
-		if (this._hashTable[index] === undefined) {
-			throw new Error('Key error');
+		const hash = HashMap._hashString(key);
+		const index = hash % this._capacity;
+		if (this._hashTable[index] === NULL) {
+			return -1;
 		}
-		return this._hashTable[index].value;
+		else {
+			let node = this._hashTable[index];
+			while (node !== NULL && node.key !== key) {
+				node = node.next;
+			}
+			if (node === NULL)
+				return -1;
+			else
+				return node.value;
+		}
 	}
 
 	set(key, value) {
-		const loadRatio = (this.length + this._deleted + 1) / this._capacity;
+		const loadRatio = (this.length + 1) / this._capacity;
 		if (loadRatio > HashMapSC.MAX_LOAD_RATIO) {
 			this._resize(this._capacity * HashMapSC.SIZE_RATIO);
 		}
 		//Find the slot where this key should be in
-		const index = this._findSlot(key);
+		const hash = HashMapSC._hashString(key);
+		const index = hash % this._capacity;
 
-		if (!this._hashTable[index]) {
+		if (!this._hashTable[index] === undefined) {
+			this._hashTable[index] = {};
+			this._hashTable[index].next = new _Node(key, value, null);
 			this.length++;
 		}
-		this._hashTable[index] = {
-			key,
-			value,
-			DELETED: false
-		};
+		else {
+			let node = this._hashTable[index];
+			while (node.next !== null && node.key !== key) {
+				node = node.next;
+			}
+			if (node.key === key) {
+				node.value = value;
+				this.length++;
+			}
+			else {
+				node.next = new _Node(key, value, null);
+				this._ength++;
+			}
+		}
 	}
 
 	delete(key) {
-		const index = this._findSlot(key);
-		const slot = this._hashTable[index];
-		if (slot === undefined) {
-			throw new Error('Key error');
+		const hash = HashMap._hashString(key);
+		const index = hash % this._capacity;
+		let previous = null;
+		let current = this._hashTable[index];
+
+		if (this._hashTable[index] !== undefined) {
+			while (current.next !== null && current.key !== key) {
+				previous = current;
+				current = current.next;
+			}
+			if (current === null) {
+				console.log('Item not found');
+				return;
+			}
+			if (current.key === key) {
+				previous.next = current.next;
+				this.length--;
+			}
 		}
-		slot.DELETED = true;
-		this.length--;
-		this._deleted++;
 	}
 
 	_findSlot(key) {
 		const hash = HashMapSC._hashString(key);
-		const start = hash % this._capacity;
+		const index = hash % this._capacity;
+		let slot = this._hashTable[index];
 
-		const index = start % this._capacity;
-		const slot = this._hashTable[index];
-		if (slot === undefined || (slot.key === key && !slot.DELETED)) {
-			return index;
+		if (!slot) {
+			return this._hashTable[index] = { key };
 		}
-		
+		if (slot.key === key)
+			return slot;
+
+		while (slot.next) {
+			slot = slot.next;
+			if (slot.key == key)
+				return slot;
+		}
+
+		return slot.next = { key };
 	}
 
 	_resize(size) {
@@ -64,12 +111,11 @@ class HashMapSC {
 		this._capacity = size;
 		// Reset the length - it will get rebuilt as you add the items back
 		this.length = 0;
-		this._deleted = 0;
 		this._hashTable = [];
 
-		for (const slot of oldSlots) {
-			if (slot !== undefined && !slot.DELETED) {
-				this.set(slot.key, slot.value);
+		for (let i = 0; i < oldSlots.length; i++) {
+			for (let slot = oldSlots[i]; slot; slot = slot.next) {
+				if (!slot.deleted) this.insert(slot.key, slot.value);
 			}
 		}
 	}

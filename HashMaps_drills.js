@@ -1,11 +1,11 @@
 'use strict';
 
 const HashMap = require('./HashMap');
+const HashMapSC = require('./HashMapSC');
 
+// 1) Create a HashMap class
 function main() {
 	const lotr = new HashMap();
-	lotr.MAX_LOAD_RATIO = 0.5;
-	lotr.SIZE_RATIO = 3;
 	lotr.set('Hobbit', 'Bilbo');
 	lotr.set('Hobbit', 'Frodo');
 	lotr.set('Wizard', 'Gandalf');
@@ -24,6 +24,7 @@ function main() {
 	console.log(lotr.get('Hobbit'));
 }
 
+// 2) WhatDoesThisDo
 const WhatDoesThisDo = function () {
 	let str1 = 'Hello World.';
 	let str2 = 'Hello World.';
@@ -40,6 +41,7 @@ const WhatDoesThisDo = function () {
 	console.log(map2.get(str3));
 };
 
+// 4) Remove Duplicates
 function removeDups(str) {
 	let output = '';
 	const map = new HashMap();
@@ -53,6 +55,7 @@ function removeDups(str) {
 	return output;
 }
 
+// 5) Any permutation a palindrome
 function anyPermPali(str) {
 	const input = [];
 	const anagrams = (str, prefix = '') => {
@@ -82,6 +85,7 @@ function anyPermPali(str) {
 	return false;
 }
 
+// 6) Anagram grouping
 function anagramGroup(list) {
 	const isAna = (str1, str2) => {
 		const arr = [];
@@ -105,7 +109,7 @@ function anagramGroup(list) {
 
 	for (let i = 1; i < list.length; i++) {
 		for (let j = 0; j < map.get('length'); j++) {
-
+			console.log(map.get(j)[0]);
 			if (isAna(map.get(j)[0], list[i])) {
 				map.set(i, map.get(j).push(list[i]));
 			}
@@ -114,6 +118,7 @@ function anagramGroup(list) {
 				map.set('length', map.get('length') + 1);
 			}
 		}
+		console.log(list[i]);
 	}
 
 	const output = [];
@@ -122,6 +127,27 @@ function anagramGroup(list) {
 	}
 
 	return output;
+}
+
+// 7) Separate Chaining
+function mainSC() {
+	const lotr = new HashMapSC();
+	lotr.set('Hobbit', 'Bilbo');
+	lotr.set('Hobbit', 'Frodo');
+	lotr.set('Wizard', 'Gandalf');
+	lotr.set('Human', 'Aragorn');
+	lotr.set('Elf', 'Legolas');
+	lotr.set('Maiar', 'The Necromancer');
+	lotr.set('Maiar', 'Sauron');
+	lotr.set('RingBearer', 'Gollum');
+	lotr.set('LadyOfLight', 'Galadriel');
+	lotr.set('HalfElven', 'Arwen');
+	lotr.set('Ent', 'Treebeard');
+
+	console.log(lotr);
+
+	console.log(lotr.get('Maiar'));
+	console.log(lotr.get('Hobbit'));
 }
 
 // main();
@@ -135,4 +161,4 @@ function anagramGroup(list) {
 
 console.log(anagramGroup(['east', 'cars', 'acre', 'arcs', 'teas', 'eats', 'race']));
 
-
+// mainSC();
